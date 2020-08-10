@@ -14,6 +14,7 @@ public enum Queries {
     CREATE_BOOK("INSERT INTO book (name, publishDate, authorId) VALUES (?, ?, ?);"),
     READ_BOOK_BY_ID("SELECT * FROM book WHERE id = ?;"),
     READ_BOOK_BY_NAME("SELECT * FROM book WHERE name LIKE ?;"),
+    READ_BOOK_BY_AUTHOR_ID("SELECT * FROM book WHERE authorID = ?;"),
     READ_ALL_BOOKS("SELECT * FROM book;"),
     UPDATE_BOOK("UPDATE book SET name = ?, publishDate = ?, authorId = ? WHERE id = ?;"),
     DELETE_BOOK("DELETE FROM book where id = ?;"),

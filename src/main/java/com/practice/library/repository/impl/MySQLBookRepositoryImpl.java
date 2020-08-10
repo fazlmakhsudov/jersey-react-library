@@ -27,7 +27,6 @@ public class MySQLBookRepositoryImpl implements BookRepository {
             rowInserted = statement.executeUpdate() > 0;
         }
         dbUtil.disconnect();
-        System.out.println(rowInserted);
         if (rowInserted) {
             return book.getId();
         }
@@ -67,7 +66,36 @@ public class MySQLBookRepositoryImpl implements BookRepository {
             statement.setString(1, '%' + name + '%');
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    int id = Integer.parseInt(resultSet.getString(1));
+                    int id = resultSet.getInt(1);
+                    String nameOriginal = resultSet.getString(2);
+                    LocalDate publishDate = LocalDate.parse(resultSet.getString(3));
+                    int authorId = resultSet.getInt(4);
+                    book = new Book();
+                    book.setId(id);
+                    book.setName(nameOriginal);
+                    book.setPublishDate(publishDate);
+                    book.setAuthor(getAuthor(authorId));
+                }
+            }
+        }
+        dbUtil.disconnect();
+        return book;
+    }
+
+    @Override
+    public Book readByAuthor(String name)  throws SQLException {
+        Book book = null;
+        dbUtil.connect();
+        try (PreparedStatement statement = dbUtil.getJdbcConnection()
+                .prepareStatement(Queries.READ_BOOK_BY_AUTHOR_ID.getQuery())) {
+            Author author = getAuthor(name);
+            if (author == null) {
+                return null;
+            }
+            statement.setInt(1, author.getId());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt(1);
                     String nameOriginal = resultSet.getString(2);
                     LocalDate publishDate = LocalDate.parse(resultSet.getString(3));
                     int authorId = resultSet.getInt(4);
@@ -93,6 +121,25 @@ public class MySQLBookRepositoryImpl implements BookRepository {
                     String name = resultSet.getString(2);
                     LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
                     author.setId(authorId);
+                    author.setName(name);
+                    author.setBirthdate(birthdate);
+                }
+            }
+        }
+        return author;
+    }
+
+    private Author getAuthor(String authorName) throws SQLException {
+        Author author = new Author();
+        try (PreparedStatement statement = dbUtil.getJdbcConnection()
+                .prepareStatement(Queries.READ_AUTHOR_BY_NAME.getQuery())) {
+            statement.setString(1, '%' + authorName + '%');
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt(1);
+                    String name = resultSet.getString(2);
+                    LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
+                    author.setId(id);
                     author.setName(name);
                     author.setBirthdate(birthdate);
                 }

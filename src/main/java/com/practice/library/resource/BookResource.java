@@ -54,6 +54,9 @@ public class BookResource {
         try {
             book = searchParameter.matches("\\d+") ?
                     bookService.find(Integer.parseInt(searchParameter)) : bookService.find(searchParameter);
+            if (book == null) {
+                book = bookService.findByAuthor(searchParameter);
+            }
         } catch (SQLException ex) {
             LOGGER.severe(ex.getMessage());
         }
@@ -64,6 +67,7 @@ public class BookResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateBook(BookDto bookDto) {
+        System.out.println(bookDto + "  ***");
         try {
             bookService.save(bookDto.toBook());
         } catch (SQLException ex) {

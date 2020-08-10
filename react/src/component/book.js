@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageHolder from './image-holder.js';
 import axios from 'axios';
 import { Row, Col, ButtonGroup, Dropdown, Modal, Form, Button, Accordion, Card } from 'react-bootstrap';
@@ -7,9 +7,12 @@ import { Row, Col, ButtonGroup, Dropdown, Modal, Form, Button, Accordion, Card }
 function Book(props) {
   let url = props.url + "/book";
   let setData = props.setData;
+  let setBooks = props.setBooks;
+  let flag = props.flag;
+  let setFlag = props.setFlag;
+  let authors = props.authors;
 
   const [bookId, setBookId] = useState(null);
-  const [books, setBooks] = useState([]);
   const [showFlag, setShowFlag] = useState(false);
   const [modalType, setModalType] = useState('');
   const [searchText, setSearchText] = useState('');
@@ -19,6 +22,7 @@ function Book(props) {
   const [createFlag, setCreateFlag] = useState(false);
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [disableParameter, setDisableParameter] = useState("disabled");
+  const [authorName, setAuthorName] = useState('');
 
   function createBook() {
     axios({
@@ -31,6 +35,7 @@ function Book(props) {
         id: '1',
         name: name,
         publishDate: publishDate,
+        authorId: getAuthorIdFromName(authorName),
       }
     }).then(response => {
       if (response.status === 201) {
@@ -44,7 +49,7 @@ function Book(props) {
     });
   }
 
-  function getAllBooks() {
+  function getAllBooks(listNameFlag = false) {
     axios({
       'method': 'GET',
       'url': url,
@@ -53,8 +58,10 @@ function Book(props) {
       },
     }).then(response => {
       if (response.status === 200) {
-        setBooks(response.data);
-        setData(formBooksHtml(response.data));
+        setBooks(response.data)
+        if (!listNameFlag) {
+          setData(formBooksHtml(response.data));
+        }
       }
     }).catch(error => {
       console.log('erroring from getAllAthors: ', error);
@@ -93,6 +100,7 @@ function Book(props) {
         id: bookId,
         name: name,
         publishDate: publishDate,
+        authorId: getAuthorIdFromName(authorName),
       }
     }).then(response => {
       if (response.status === 200) {
@@ -153,6 +161,16 @@ function Book(props) {
     return randomValue + 6;
   }
 
+  function getAuthorIdFromName(name) {
+    let id = -1;
+    authors.map((author) => {
+      if (Object.is(name, author.name)) {
+        id = author.id;
+      }
+    });
+    return id;
+  }
+
   function formBookHtml(item) {
     if (!Object.is(item, null)) {
       let html =
@@ -162,7 +180,7 @@ function Book(props) {
           </Col>
           <Col lg={12} md={12} xs={12}>
             <Row className=''>
-              <Col  className='text-right' md={5} xs={6}>
+              <Col className='text-right' md={5} xs={6}>
                 <strong>Name:</strong>
               </Col>
               <Col md={7} xs={6}>
@@ -170,15 +188,23 @@ function Book(props) {
               </Col>
             </Row>
             <Row>
-              <Col  className='text-right' md={5} xs={6}>
+              <Col className='text-right' md={5} xs={6}>
                 <strong>Publish date:</strong>
               </Col>
               <Col md={7} xs={6} className=''>
                 {item.publishDate.dayOfMonth + " / " + item.publishDate.monthValue + " / " + item.publishDate.year}
               </Col>
             </Row>
-            <Row className=''>
-              <Col>
+            <Row>
+              <Col className='text-right' md={5} xs={6}>
+                <strong>Author:</strong>
+              </Col>
+              <Col md={7} xs={6} className=''>
+                {item.author.name}
+              </Col>
+            </Row>
+            <Row className='text-center'>
+              <Col md={{ offset: 3, span: 6 }} xs={12}>
                 <Accordion>
                   <Card>
                     <Accordion.Toggle as={Card.Header} eventKey="0" className="text-center">
@@ -186,10 +212,10 @@ function Book(props) {
                   </Accordion.Toggle>
                     <Accordion.Collapse eventKey="0">
                       <Card.Body as={Row}>
-                        <Col md={6} xs={12}>
+                        <Col className='mt-2 mb-2' xs={12}>
                           <Button variant='info' onClick={() => handleOperation(item)} block>Update</Button>
                         </Col>
-                        <Col md={6} xs={12}>
+                        <Col xs={12}>
                           <Button variant='danger' onClick={() => handleOperation(item, false, true)} block>Delete</Button>
                         </Col>
                       </Card.Body>
@@ -229,6 +255,7 @@ function Book(props) {
     setName(item.name);
     let date = new Date(item.publishDate.year, item.publishDate.monthValue - 1, item.publishDate.dayOfMonth);
     setPublishDate(date);
+    setAuthorName(item.author.name);
     if (deleteFlag) {
       setDisableParameter('disabled');
       setDeleteFlag(true)
@@ -241,7 +268,13 @@ function Book(props) {
     createFlag ? setCreateFlag(false) : updateFlag ? setUpdateFlag(false) : setDeleteFlag(false);
     clearBookFields();
   }
-
+  useEffect(() => {
+    console.log('book useEffect');
+    if (flag) {
+      getAllBooks(true);
+      setFlag(false);
+    }
+  });
   return (
     <>
       <Col md={3} xs={12}>
@@ -266,7 +299,7 @@ function Book(props) {
         <Modal.Body >
           <Form onSubmit={(e) => handleSubmit(e)}>
             <Form.Group>
-              <Form.Control type="text" className='ml-5 w-75' style={{ alignCenter: 'center' }} placeholder={"Type name of " + modalType} value={searchText} onChange={(e) => setSearchText(e.target.value)} />
+              <Form.Control type="text" className='ml-5 w-75' style={{ alignCenter: 'center' }} placeholder={"Type name or author of " + modalType} value={searchText} onChange={(e) => setSearchText(e.target.value)} />
               <Form.Text className="ml-5 text-muted">
                 Press enter when you have already typed
               </Form.Text>
@@ -291,6 +324,24 @@ function Book(props) {
               <Form.Label className='ml-2' column sm="3">PublishDate:</Form.Label>
               <Col sm="8">
                 <Form.Control type="date" className='w-75' style={{ alignCenter: 'center' }} value={publishDate} onChange={(e) => setPublishDate(e.target.value)} disableParameter />
+              </Col>
+            </Form.Group>
+            <br />
+            <Form.Group as={Row}>
+              <Form.Label className='ml-2' column sm="3">Author:</Form.Label>
+              <Col sm="8">
+                <Form.Control as="select" defaultValue={
+                  (createFlag) ? "Choose" : authorName
+                } onChange={(e) => setAuthorName(e.target.value)}>
+                  <option>Choose</option>
+                  {
+                    authors.map((author, index) =>
+                      <option key={index}>
+                        {author.name}
+                      </option>
+                    )
+                  }
+                </Form.Control>
               </Col>
             </Form.Group>
             <br />

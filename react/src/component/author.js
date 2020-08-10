@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ImageHolder from './image-holder.js';
 import axios from 'axios';
 import { Row, Col, ButtonGroup, Dropdown, Modal, Form, Button, Accordion, Card } from 'react-bootstrap';
@@ -7,9 +7,11 @@ import { Row, Col, ButtonGroup, Dropdown, Modal, Form, Button, Accordion, Card }
 function Author(props) {
   let url = props.url + "/author";
   let setData = props.setData;
+  let setAuthors = props.setAuthors;
+  let flag = props.flag;
+  let setFlag = props.setFlag;
 
   const [authorId, setAuthorId] = useState(null);
-  const [authors, setAuthors] = useState([]);
   const [showFlag, setShowFlag] = useState(false);
   const [modalType, setModalType] = useState('');
   const [searchText, setSearchText] = useState('');
@@ -44,7 +46,7 @@ function Author(props) {
     });
   }
 
-  function getAllAuthors() {
+  function getAllAuthors(listNameFlag = false) {
     axios({
       'method': 'GET',
       'url': url,
@@ -53,8 +55,10 @@ function Author(props) {
       },
     }).then(response => {
       if (response.status === 200) {
-        setAuthors(response.data);
-        setData(formAuthorsHtml(response.data));
+        setAuthors(response.data)
+        if (!listNameFlag) {
+          setData(formAuthorsHtml(response.data));
+        }
       }
     }).catch(error => {
       console.log('erroring from getAllAthors: ', error);
@@ -187,7 +191,7 @@ function Author(props) {
                     <Accordion.Collapse eventKey="0">
                       <Card.Body>
                         <Button variant='info' onClick={() => handleOperation(item)} block>Update</Button>
-                        <Button variant='danger' onClick={() => handleOperation(item,false,true)} block>Delete</Button>
+                        <Button variant='danger' onClick={() => handleOperation(item, false, true)} block>Delete</Button>
                       </Card.Body>
                     </Accordion.Collapse>
                   </Card>
@@ -215,12 +219,12 @@ function Author(props) {
     return htmls;
   }
 
-  function handleOperation(item, createflag = false, deleteFlag=false) {
+  function handleOperation(item, createflag = false, deleteFlag = false) {
     setModalType('author');
     if (createflag) {
       setCreateFlag(true);
       return;
-    } 
+    }
     setAuthorId(item.id);
     setName(item.name);
     let date = new Date(item.birthdate.year, item.birthdate.monthValue - 1, item.birthdate.dayOfMonth);
@@ -237,6 +241,14 @@ function Author(props) {
     createFlag ? setCreateFlag(false) : updateFlag ? setUpdateFlag(false) : setDeleteFlag(false);
     clearAuthorFields();
   }
+
+  useEffect(() => {
+    console.log("useEffect authors:", flag);
+    if (flag) {
+      getAllAuthors(true);
+      setFlag(false);
+    }
+  });
 
   return (
     <>
@@ -279,14 +291,14 @@ function Author(props) {
             <Form.Group as={Row} >
               <Form.Label className='ml-2' column sm="3">Name:</Form.Label>
               <Col sm="8">
-                <Form.Control type="text" className='w-75' style={{ alignCenter: 'center' }} placeholder='Type name' value={name} onChange={(e) => setName(e.target.value)} disableParameter/>
+                <Form.Control type="text" className='w-75' style={{ alignCenter: 'center' }} placeholder='Type name' value={name} onChange={(e) => setName(e.target.value)} disableParameter />
               </Col>
             </Form.Group>
             <br />
             <Form.Group as={Row} >
               <Form.Label className='ml-2' column sm="3">Birthdate:</Form.Label>
               <Col sm="8">
-                <Form.Control type="date" className='w-75' style={{ alignCenter: 'center' }} value={birthdate} onChange={(e) => setBirthdate(e.target.value)} disableParameter/>
+                <Form.Control type="date" className='w-75' style={{ alignCenter: 'center' }} value={birthdate} onChange={(e) => setBirthdate(e.target.value)} disableParameter />
               </Col>
             </Form.Group>
             <br />

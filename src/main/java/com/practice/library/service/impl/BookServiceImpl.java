@@ -27,6 +27,11 @@ public class BookServiceImpl implements BookService {
         return bookRepository.read(name);
     }
 
+    @Override
+    public Book findByAuthor(String name) throws SQLException {
+        return bookRepository.readByAuthor(name);
+    }
+
     public boolean save(Book item) throws SQLException {
         return bookRepository.update(item);
     }
