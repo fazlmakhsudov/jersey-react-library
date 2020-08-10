@@ -1,0 +1,168 @@
+#book-anime1 {
+  width: 50px;
+  height: 50px;
+  border-radius: 2px;
+  position: relative;
+  background-image: url('./component/resource/book1.jpg');
+  animation-name: horizontal-move1;
+  animation-duration: 37s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  display: inline-block;  
+}
+
+#book-anime2 {
+  width: 50px;
+  height: 50px;
+  border-radius: 2px;
+  position: relative;
+  background-image: url('./component/resource/book2.jpeg');
+  animation-name: horizontal-move2;
+  animation-duration: 29s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  display: inline-block;  
+}
+
+#book-anime3 {
+  width: 50px;
+  height: 50px;
+  border-radius: 2px;
+  position: relative;
+  background-image: url('./component/resource/book3.png');
+  animation-name: horizontal-move3;
+  animation-duration: 43s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate-reverse;
+  display: inline-block;  
+}
+
+#book-anime4 {
+  width: 50px;
+  height: 50px;
+  border-radius: 2px;
+  position: relative;
+  background-image: url('./component/resource/book4.jpg');
+  animation-name: horizontal-move4;
+  animation-duration: 25s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate-reverse;
+  display: inline-block;  
+}
+
+@keyframes horizontal-move1 {
+  0%   {left:0%;}
+  20%  { left:20%;}
+  40%   { left:40%;}
+  60%  { left:60%;}
+  80%   { left:75%;}
+  100%  {left:90%;}
+}
+
+@keyframes horizontal-move2 {
+  0%  { left: 0%;}
+  30%  { left:30%;}
+  50%  { left:50%;}
+  70%  { left:70%;}
+  100%  { left:90%;}
+}
+
+@keyframes horizontal-move3 {
+  0%  {left:0%;}
+  40%   { left:40%;}
+  60%  { left:60%;}
+  100%   { left:90%;}
+}
+
+@keyframes horizontal-move4 {
+  0%  { left: 0%;}
+  50%  { left:50%;}
+  70%  { left:70%;}
+  100%  {left:90%;}
+}
+
+#header {
+  height: 50px;
+  border-radius: 5px;
+  position: relative;
+  animation-name: color-change;
+  animation-duration: 40s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes color-change {
+  0%   {background-color: rgb(137, 243, 238);}
+  25%  {background-color: rgb(105, 226, 105);}
+  50%  {background-color: rgb(222, 236, 92);}
+  75%  {background-color: rgb(105, 226, 105);}
+  100% {background-color: rgb(137, 243, 238);}
+}
+
+.nav-menu {
+  font-size: xx-large;
+  font-weight: bold;
+  letter-spacing: 4px;
+  display: inline;
+}
+
+.modal-window {
+  align-self: center;
+}
+
+.width-100 {
+  width: 240px;
+}
+
+.font-24 {
+  font-size: larger;
+}
+
+.bg-color {
+  background-color: rgb(148, 214, 226);
+  font-size: xx-large;
+  font-weight: bold;
+  letter-spacing: 10px;
+  display: inline;
+  align-self: center;
+  text-align: center;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
