@@ -9,6 +9,8 @@ public interface BaseService<T> {
 
     T find(int id) throws SQLException;
 
+    T find(String name) throws SQLException;
+
     boolean save(T item) throws SQLException;
 
     boolean remove(int id) throws SQLException;

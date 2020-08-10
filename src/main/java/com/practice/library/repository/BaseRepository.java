@@ -10,6 +10,8 @@ public interface BaseRepository<T> {
 
     T read(int id) throws SQLException;
 
+    T read(String name) throws SQLException;
+
     boolean update(T item) throws SQLException;
 
     boolean delete(int id) throws SQLException;

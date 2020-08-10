@@ -37,7 +37,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
         Author author = null;
         dbUtil.connect();
         try (PreparedStatement statement = dbUtil.getJdbcConnection()
-                .prepareStatement(Queries.READ_AUTHOR.getQuery())) {
+                .prepareStatement(Queries.READ_AUTHOR_BY_ID.getQuery())) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -46,6 +46,33 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
                     author = new Author();
                     author.setId(id);
                     author.setName(name);
+                    author.setBirthdate(birthdate);
+                }
+            }
+        }
+        if (author == null) {
+            return author;
+        }
+        author.setBooks(getBooks(author.getId()));
+        dbUtil.disconnect();
+        return author;
+    }
+
+    @Override
+    public Author read(String name) throws SQLException {
+        Author author = null;
+        dbUtil.connect();
+        try (PreparedStatement statement = dbUtil.getJdbcConnection()
+                .prepareStatement(Queries.READ_AUTHOR_BY_NAME.getQuery())) {
+            statement.setString(1, '%' + name + '%');
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = Integer.parseInt(resultSet.getString(1));
+                    String nameOriginal = resultSet.getString(2);
+                    LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
+                    author = new Author();
+                    author.setId(id);
+                    author.setName(nameOriginal);
                     author.setBirthdate(birthdate);
                 }
             }

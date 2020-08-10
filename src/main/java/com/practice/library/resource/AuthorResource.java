@@ -49,11 +49,12 @@ public class AuthorResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{id}")
-    public Author getAuthor(@PathParam("id") int id) {
+    @Path("{searchParameter}")
+    public Author getAuthor(@PathParam("searchParameter") String searchParameter) {
         Author author = new Author();
         try {
-            author = authorService.find(id);
+            author = searchParameter.matches("\\d+") ?
+                    authorService.find(Integer.parseInt(searchParameter)) : authorService.find(searchParameter);
         } catch (SQLException ex) {
             LOGGER.severe(ex.getMessage());
         }

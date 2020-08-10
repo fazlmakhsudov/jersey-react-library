@@ -23,6 +23,11 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.read(id);
     }
 
+    @Override
+    public Author find(String name) throws SQLException {
+        return authorRepository.read(name);
+    }
+
     public boolean save(Author item) throws SQLException {
         return authorRepository.update(item);
     }

@@ -48,11 +48,12 @@ public class BookResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{id}")
-    public Book getBook(@PathParam("id") int id) {
+    @Path("{searchParameter}")
+    public Book getBook(@PathParam("searchParameter") String searchParameter) {
         Book book = new Book();
         try {
-            book = bookService.find(id);
+            book = searchParameter.matches("\\d+") ?
+                    bookService.find(Integer.parseInt(searchParameter)) : bookService.find(searchParameter);
         } catch (SQLException ex) {
             LOGGER.severe(ex.getMessage());
         }
