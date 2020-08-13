@@ -8,21 +8,23 @@ function Book(props) {
   let url = props.url + "/book";
   let setData = props.setData;
   let setBooks = props.setBooks;
-  let flag = props.flag;
-  let setFlag = props.setFlag;
+  let books = props.books;
+  let authorityFlag = props.authorityFlag;
   let authors = props.authors;
 
+  const [flag, setFlag] = useState(true);
   const [bookId, setBookId] = useState(null);
   const [showFlag, setShowFlag] = useState(false);
-  const [modalType, setModalType] = useState('');
   const [searchText, setSearchText] = useState('');
   const [name, setName] = useState('');
   const [publishDate, setPublishDate] = useState('');
   const [updateFlag, setUpdateFlag] = useState(false);
   const [createFlag, setCreateFlag] = useState(false);
   const [deleteFlag, setDeleteFlag] = useState(false);
-  const [disableParameter, setDisableParameter] = useState("disabled");
   const [authorName, setAuthorName] = useState('');
+  const [chooseUpdateFlag, setChooseUpdateFlag] = useState(false);
+  const [chooseModalBodyFlag, setChooseModalBodyFlag] = useState(false);
+  const [chooseDeleteFlag, setChooseDeleteFlag] = useState(false);
 
   function createBook() {
     axios({
@@ -44,6 +46,7 @@ function Book(props) {
         clearBookFields();
       }
     }).catch(error => {
+      alert('can\'t create book \n' + error);
       setCreateFlag(false);
       clearBookFields();
     });
@@ -64,7 +67,7 @@ function Book(props) {
         }
       }
     }).catch(error => {
-      console.log('erroring from getAllAthors: ', error);
+      alert('can\'t read all books \n' + error);
     });
   }
 
@@ -84,7 +87,7 @@ function Book(props) {
         setSearchText('');
       }
     }).catch(error => {
-      console.log('erroring from getAthor: ', error);
+      alert('can\'t read book \n' + error);
       setSearchText('');
     });
   }
@@ -105,11 +108,16 @@ function Book(props) {
     }).then(response => {
       if (response.status === 200) {
         setUpdateFlag(false);
+        setChooseUpdateFlag(false);
+        setChooseModalBodyFlag(false);
         clearBookFields();
         getAllBooks();
       }
     }).catch(error => {
+      alert('can\'t update \n' + error);
       setUpdateFlag(false);
+      setChooseUpdateFlag(false);
+      setChooseModalBodyFlag(false);
       clearBookFields();
     });
   }
@@ -124,11 +132,16 @@ function Book(props) {
     }).then(response => {
       if (response.status === 200) {
         setDeleteFlag(false);
+        setChooseDeleteFlag(false);
+        setChooseModalBodyFlag(false);
         clearBookFields();
         getAllBooks();
       }
     }).catch(error => {
+      alert('can\'t delete \n' + error);
       setDeleteFlag(false);
+      setChooseDeleteFlag(false);
+      setChooseModalBodyFlag(false);
       clearBookFields();
     });
   }
@@ -137,20 +150,18 @@ function Book(props) {
     setBookId('');
     setName('');
     setPublishDate('');
-    setDisableParameter('');
+    setSearchText('');
+    setAuthorName('');
   }
 
-  function showModal(type) {
+  function showModal() {
     setShowFlag(true);
-    setModalType(type);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
     setShowFlag(false);
-    if (modalType === 'book') {
-      getBook();
-    }
+    getBook();
   }
 
   function getRandomInt(max) {
@@ -203,27 +214,31 @@ function Book(props) {
                 {item.author.name}
               </Col>
             </Row>
-            <Row className='text-center'>
-              <Col md={{ offset: 3, span: 6 }} xs={12}>
-                <Accordion>
-                  <Card>
-                    <Accordion.Toggle as={Card.Header} eventKey="0" className="text-center">
-                      Click me!
+            {
+              authorityFlag ?
+                <Row className='text-center'>
+                  <Col md={{ offset: 3, span: 6 }} xs={12}>
+                    <Accordion>
+                      <Card>
+                        <Accordion.Toggle as={Card.Header} eventKey="0" className="text-center">
+                          Click me!
                   </Accordion.Toggle>
-                    <Accordion.Collapse eventKey="0">
-                      <Card.Body as={Row}>
-                        <Col className='mt-2 mb-2' xs={12}>
-                          <Button variant='info' onClick={() => handleOperation(item)} block>Update</Button>
-                        </Col>
-                        <Col xs={12}>
-                          <Button variant='danger' onClick={() => handleOperation(item, false, true)} block>Delete</Button>
-                        </Col>
-                      </Card.Body>
-                    </Accordion.Collapse>
-                  </Card>
-                </Accordion>
-              </Col>
-            </Row>
+                        <Accordion.Collapse eventKey="0">
+                          <Card.Body as={Row}>
+                            <Col className='mt-2 mb-2' xs={12}>
+                              <Button variant='info' onClick={() => handleOperation(item)} block>Update</Button>
+                            </Col>
+                            <Col xs={12}>
+                              <Button variant='danger' onClick={() => handleOperation(item, false, true)} block>Delete</Button>
+                            </Col>
+                          </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                    </Accordion>
+                  </Col>
+                </Row> : ''
+            }
+
           </Col>
         </Row>;
       return html;
@@ -246,7 +261,6 @@ function Book(props) {
   }
 
   function handleOperation(item, createflag = false, deleteFlag = false) {
-    setModalType('book');
     if (createflag) {
       setCreateFlag(true);
       return;
@@ -257,7 +271,6 @@ function Book(props) {
     setPublishDate(date);
     setAuthorName(item.author.name);
     if (deleteFlag) {
-      setDisableParameter('disabled');
       setDeleteFlag(true)
     } else {
       setUpdateFlag(true);
@@ -265,11 +278,81 @@ function Book(props) {
   }
 
   function handleClose() {
-    createFlag ? setCreateFlag(false) : updateFlag ? setUpdateFlag(false) : setDeleteFlag(false);
     clearBookFields();
+    setChooseModalBodyFlag(false);
+    if (chooseUpdateFlag || chooseDeleteFlag) {
+      setChooseUpdateFlag(false);
+      setChooseDeleteFlag(false);
+      return;
+    }
+    createFlag ? setCreateFlag(false) : updateFlag ? setUpdateFlag(false) : setDeleteFlag(false);
+  }
+
+  function getBookByName(name) {
+    let bookToSearch = {};
+    books.map((book) => {
+      if (Object.is(name, book.name)) {
+        bookToSearch = book;
+      }
+    });
+    return bookToSearch;
+  }
+
+  function formModalBody() {
+    return <Modal.Body>
+      <Form>
+        <Form.Group as={Row} >
+          <Form.Label className='ml-2' column sm="3">Name:</Form.Label>
+          <Col sm="8">
+            <Form.Control type="text" className='w-75' style={{ alignCenter: 'center' }} placeholder='Type name' value={name} onChange={(e) => setName(e.target.value)} disableParameter />
+          </Col>
+        </Form.Group>
+        <br />
+        <Form.Group as={Row} >
+          <Form.Label className='ml-2' column sm="3">PublishDate:</Form.Label>
+          <Col sm="8">
+            <Form.Control type="date" className='w-75' style={{ alignCenter: 'center' }} value={publishDate} onChange={(e) => setPublishDate(e.target.value)} disableParameter />
+          </Col>
+        </Form.Group>
+        <br />
+        <Form.Group as={Row}>
+          <Form.Label className='ml-2' column sm="3">Author:</Form.Label>
+          <Col sm="8">
+            <Form.Control as="select" defaultValue={
+              (createFlag) ? "Choose" : authorName
+            } value={authorName} onChange={(e) => setAuthorName(e.target.value)}>
+              <option>Choose</option>
+              {
+                authors.map((author, index) =>
+                  <option key={index}>
+                    {author.name}
+                  </option>
+                )
+              }
+            </Form.Control>
+          </Col>
+        </Form.Group>
+        <br />
+      </Form>
+    </Modal.Body>
+  }
+
+  function handleChooseOperation(name) {
+    setSearchText(name);
+    if (Object.is('choose', name)) {
+      setChooseModalBodyFlag(false);
+      return;
+    }
+    let item = getBookByName(name);
+    setBookId(item.id);
+    setName(item.name);
+    let date = new Date(item.publishDate.year, item.publishDate.monthValue - 1, item.publishDate.dayOfMonth);
+    setPublishDate(date);
+    setAuthorName(item.author.name);
+    setChooseModalBodyFlag(true);
   }
   useEffect(() => {
-    console.log('book useEffect');
+    console.log('useeffect book');
     if (flag) {
       getAllBooks(true);
       setFlag(false);
@@ -283,23 +366,30 @@ function Book(props) {
             <p className='nav-menu'>Books</p>
           </Dropdown.Toggle>
           <Dropdown.Menu className="width-100">
-            <Dropdown.Item eventKey="1" className='pl-5 h4' onClick={() => handleOperation('', true)}>Add new book</Dropdown.Item>
-            <Dropdown.Item eventKey="2" className='pl-5 h4' onClick={() => showModal('book')}>Find book</Dropdown.Item>
+            {
+              authorityFlag ? <Dropdown.Item eventKey="1" className='pl-5 h4' onClick={() => handleOperation('', true)}>Add new book</Dropdown.Item> : ''
+            }
+            <Dropdown.Item eventKey="2" className='pl-5 h4' onClick={() => showModal()}>Find book</Dropdown.Item>
             <Dropdown.Item eventKey="3" className='pl-5 h4' onClick={() => getAllBooks()}>Find books</Dropdown.Item>
-            <Dropdown.Item eventKey="4" className='pl-5 h4'>Update book</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item eventKey="5" className='pl-5 h4'>Delete book</Dropdown.Item>
+            {
+              authorityFlag ?
+                <>
+                  <Dropdown.Item eventKey="4" className='pl-5 h4' onClick={() => setChooseUpdateFlag(true)}>Update book</Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item eventKey="5" className='pl-5 h4' onClick={() => setChooseDeleteFlag(true)}>Delete book</Dropdown.Item>
+                </> : ''
+            }
           </Dropdown.Menu>
         </Dropdown>
       </Col>
       <Modal show={showFlag} onHide={() => setShowFlag(false)}>
         <Modal.Header closeButton>
-          <Modal.Title><p className='h3 ml-5'>Find {modalType}</p></Modal.Title>
+          <Modal.Title><p className='h3 ml-5'>Find book</p></Modal.Title>
         </Modal.Header>
         <Modal.Body >
           <Form onSubmit={(e) => handleSubmit(e)}>
             <Form.Group>
-              <Form.Control type="text" className='ml-5 w-75' style={{ alignCenter: 'center' }} placeholder={"Type name or author of " + modalType} value={searchText} onChange={(e) => setSearchText(e.target.value)} />
+              <Form.Control type="text" className='ml-5 w-75' style={{ alignCenter: 'center' }} placeholder="Type name or author of book" value={searchText} onChange={(e) => setSearchText(e.target.value)} />
               <Form.Text className="ml-5 text-muted">
                 Press enter when you have already typed
               </Form.Text>
@@ -309,47 +399,39 @@ function Book(props) {
       </Modal>
       <Modal show={updateFlag || createFlag || deleteFlag} onHide={() => handleClose()}>
         <Modal.Header closeButton>
-          <Modal.Title><p className='h3 ml-2'>{createFlag ? "Create " : updateFlag ? "Update " : "Delete "} {modalType}</p></Modal.Title>
+          <Modal.Title><p className='h3 ml-2'>{createFlag ? "Create " : updateFlag ? "Update " : "Delete "} book</p></Modal.Title>
         </Modal.Header>
-        <Modal.Body >
-          <Form>
-            <Form.Group as={Row} >
-              <Form.Label className='ml-2' column sm="3">Name:</Form.Label>
-              <Col sm="8">
-                <Form.Control type="text" className='w-75' style={{ alignCenter: 'center' }} placeholder='Type name' value={name} onChange={(e) => setName(e.target.value)} disableParameter />
-              </Col>
-            </Form.Group>
-            <br />
-            <Form.Group as={Row} >
-              <Form.Label className='ml-2' column sm="3">PublishDate:</Form.Label>
-              <Col sm="8">
-                <Form.Control type="date" className='w-75' style={{ alignCenter: 'center' }} value={publishDate} onChange={(e) => setPublishDate(e.target.value)} disableParameter />
-              </Col>
-            </Form.Group>
-            <br />
-            <Form.Group as={Row}>
-              <Form.Label className='ml-2' column sm="3">Author:</Form.Label>
-              <Col sm="8">
-                <Form.Control as="select" defaultValue={
-                  (createFlag) ? "Choose" : authorName
-                } onChange={(e) => setAuthorName(e.target.value)}>
-                  <option>Choose</option>
-                  {
-                    authors.map((author, index) =>
-                      <option key={index}>
-                        {author.name}
-                      </option>
-                    )
-                  }
-                </Form.Control>
-              </Col>
-            </Form.Group>
-            <br />
-          </Form>
-        </Modal.Body>
+        {formModalBody()}
         <Modal.Footer>
           <Button variant={deleteFlag ? 'danger' : 'info'} type="submit" onClick={() => createFlag ? createBook() : updateFlag ? updateBook() : deleteBook()} block>
             {createFlag ? "Create" : updateFlag ? "Update" : "Delete"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={chooseUpdateFlag || chooseDeleteFlag} onHide={() => handleClose()}>
+        <Modal.Header closeButton>
+          <p className='h3'>Book to {chooseUpdateFlag ? "update" : "delete"}</p>
+          <Col lg={6} md={6} xs={6}>
+            <Form.Control as="select" defaultValue={
+              (createFlag) ? "choose" : searchText
+            } onChange={(e) => handleChooseOperation(e.target.value)}>
+              <option>choose</option>
+              {
+                books.map((book, index) =>
+                  <option key={index}>
+                    {book.name}
+                  </option>
+                )
+              }
+            </Form.Control>
+          </Col>
+        </Modal.Header>
+        {
+          chooseModalBodyFlag ? formModalBody() : ''
+        }
+        <Modal.Footer>
+          <Button variant={chooseUpdateFlag ? 'info' : 'danger'} type="submit" onClick={() => chooseUpdateFlag ? updateBook() : deleteBook()} block>
+            {chooseUpdateFlag ? "Update" : "Delete"}
           </Button>
         </Modal.Footer>
       </Modal>

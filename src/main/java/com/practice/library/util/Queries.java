@@ -18,6 +18,7 @@ public enum Queries {
     READ_ALL_BOOKS("SELECT * FROM book;"),
     UPDATE_BOOK("UPDATE book SET name = ?, publishDate = ?, authorId = ? WHERE id = ?;"),
     DELETE_BOOK("DELETE FROM book where id = ?;"),
+    READ_USER_BY_NAME("SELECT * FROM user WHERE name LIKE ?;"),
     ;
     private final String query;
 

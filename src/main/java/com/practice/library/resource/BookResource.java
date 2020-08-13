@@ -67,7 +67,6 @@ public class BookResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateBook(BookDto bookDto) {
-        System.out.println(bookDto + "  ***");
         try {
             bookService.save(bookDto.toBook());
         } catch (SQLException ex) {
