@@ -1,20 +1,19 @@
 package com.practice.library.repository;
 
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface BaseRepository<T> {
 
-    int create(T item) throws SQLException;
+    int create(T item);
 
-    T read(int id) throws SQLException;
+    T read(int id);
 
-    T read(String name) throws SQLException;
+    T read(String name);
 
-    boolean update(T item) throws SQLException;
+    boolean update(T item);
 
-    boolean delete(int id) throws SQLException;
+    boolean delete(int id);
 
-    List<T> readAll() throws SQLException;
+    List<T> readAll();
 }

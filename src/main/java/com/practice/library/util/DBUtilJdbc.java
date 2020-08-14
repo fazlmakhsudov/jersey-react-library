@@ -4,12 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DBUtil {
+public class DBUtilJdbc {
     private final String jdbcURL;
     private final String jdbcUsername;
     private final String jdbcPassword;
     private Connection jdbcConnection;
-    private static DBUtil dbUtil;
+    private static DBUtilJdbc dbUtilJdbc;
 
     {
         this.jdbcURL = "jdbc:mysql://localhost:3306/new_db";
@@ -17,11 +17,11 @@ public class DBUtil {
         this.jdbcPassword = "111111frost";
     }
 
-    public static DBUtil getInstance() {
-        if (dbUtil == null) {
-            dbUtil = new DBUtil();
+    public static DBUtilJdbc getInstance() {
+        if (dbUtilJdbc == null) {
+            dbUtilJdbc = new DBUtilJdbc();
         }
-        return dbUtil;
+        return dbUtilJdbc;
     }
 
     public Connection getJdbcConnection() {

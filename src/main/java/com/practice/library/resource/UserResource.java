@@ -5,15 +5,15 @@ import com.practice.library.repository.impl.MySQLUserRepositoryImpl;
 import com.practice.library.service.UserService;
 import com.practice.library.service.impl.UserServiceImpl;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
-import java.sql.SQLException;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 @Path("/user")
 public class UserResource {
-    private final Logger LOGGER = Logger.getLogger("AuthorityResource");
     @Context
     UriInfo uriInfo;
     @Context
@@ -25,12 +25,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getAuthors(User user) {
-        User foundUser = null;
-        try {
-            foundUser = userService.find(user.getName());
-        } catch (SQLException ex) {
-            LOGGER.severe(ex.getMessage());
-        }
+        User foundUser = userService.find(user.getName());
         Response response = null;
         if (Objects.isNull(foundUser)) {
             response = Response.noContent().build();

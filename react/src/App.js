@@ -54,7 +54,10 @@ function App() {
       <Header />
       <Row className='mt-2'>
         <Col md={4} xs={12} className="" >
-          <Button variant='info' className='' onClick={() => setMainPageFlag(true)} block><p className='nav-menu'>LIBRARY</p></Button>
+          <Button variant='info' className='' onClick={() => {
+            setMainPageFlag(true);
+            setShowFlag(true);
+          }} block><p className='nav-menu'>LIBRARY</p></Button>
         </Col>
         <Author url={url} setData={setData} setAuthors={setAuthors} authorityFlag={authorityFlag} books={books} authors={authors} />
         <Book url={url} setData={setData} setBooks={setBooks} authorityFlag={authorityFlag} authors={authors} books={books} />

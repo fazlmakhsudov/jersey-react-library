@@ -16,7 +16,7 @@ function Author(props) {
   let books = props.books;
 
   const [flag, setFlag] = useState(true);
-  const [authorId, setAuthorId] = useState(null);
+  const [authorId, setAuthorId] = useState(0);
   const [showFlag, setShowFlag] = useState(false);
   const [modalType, setModalType] = useState('');
   const [searchText, setSearchText] = useState('');
@@ -37,7 +37,7 @@ function Author(props) {
         'Content-Type': 'application/json',
       },
       data: {
-        id: '1',
+        id: 1,
         name: name,
         birthdate: birthdate,
       }
@@ -148,7 +148,7 @@ function Author(props) {
   }
 
   function clearAuthorFields() {
-    setAuthorId('');
+    setAuthorId(0);
     setName('');
     setBirthdate('');
     setSearchText('');
@@ -348,7 +348,6 @@ function Author(props) {
   }
 
   useEffect(() => {
-    console.log("useEffect authors:");
     if (flag) {
       getAllAuthors(true);
       setFlag(false);

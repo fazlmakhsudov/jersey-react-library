@@ -25,18 +25,24 @@ function ModalWindow(props) {
                 password: password,
             }
         }).then(response => {
-            console.log('respone user: ', response);
             if (response.status === 200) {
                 setAuthorityFlag(true);
             }
+            clearFields();
         }).catch(error => {
             alert('It has appeared \n' + error);
+            clearFields();
         });
     }
 
     function handleSubmit() {
         setShowFlag(false);
         checkCredential();
+    }
+
+    function clearFields() {
+        setName('');
+        setPassword('');
     }
 
     return (

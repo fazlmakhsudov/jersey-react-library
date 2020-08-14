@@ -4,7 +4,6 @@ import com.practice.library.entity.User;
 import com.practice.library.repository.UserRepository;
 import com.practice.library.service.UserService;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
@@ -15,32 +14,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int add(User item) throws SQLException {
+    public int add(User item) {
         return 0;
     }
 
     @Override
-    public User find(int id) throws SQLException {
+    public User find(int id) {
         return null;
     }
 
     @Override
-    public User find(String name) throws SQLException {
+    public User find(String name) {
         return userRepository.read(name);
     }
 
     @Override
-    public boolean save(User item) throws SQLException {
+    public boolean save(User item) {
         return false;
     }
 
     @Override
-    public boolean remove(int id) throws SQLException {
+    public boolean remove(int id) {
         return false;
     }
 
     @Override
-    public List<User> findAll() throws SQLException {
+    public List<User> findAll() {
         return null;
     }
 }
