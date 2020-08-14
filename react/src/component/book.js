@@ -13,7 +13,7 @@ function Book(props) {
   let authors = props.authors;
 
   const [flag, setFlag] = useState(true);
-  const [bookId, setBookId] = useState(null);
+  const [bookId, setBookId] = useState(0);
   const [showFlag, setShowFlag] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [name, setName] = useState('');
@@ -34,7 +34,7 @@ function Book(props) {
         'Content-Type': 'application/json',
       },
       data: {
-        id: '1',
+        id: 1,
         name: name,
         publishDate: publishDate,
         authorId: getAuthorIdFromName(authorName),
@@ -147,7 +147,7 @@ function Book(props) {
   }
 
   function clearBookFields() {
-    setBookId('');
+    setBookId(0);
     setName('');
     setPublishDate('');
     setSearchText('');
@@ -318,7 +318,7 @@ function Book(props) {
         <Form.Group as={Row}>
           <Form.Label className='ml-2' column sm="3">Author:</Form.Label>
           <Col sm="8">
-            <Form.Control as="select" defaultValue={
+            <Form.Control as="select" className='w-75' defaultValue={
               (createFlag) ? "Choose" : authorName
             } value={authorName} onChange={(e) => setAuthorName(e.target.value)}>
               <option>Choose</option>
@@ -352,7 +352,6 @@ function Book(props) {
     setChooseModalBodyFlag(true);
   }
   useEffect(() => {
-    console.log('useeffect book');
     if (flag) {
       getAllBooks(true);
       setFlag(false);
