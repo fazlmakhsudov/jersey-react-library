@@ -14,10 +14,12 @@ public class AuthorServiceImpl implements AuthorService {
         this.authorRepository = authorRepository;
     }
 
+    @Override
     public int add(Author item) {
         return authorRepository.create(item);
     }
 
+    @Override
     public Author find(int id) {
         return authorRepository.read(id);
     }
@@ -27,14 +29,17 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.read(name);
     }
 
+    @Override
     public boolean save(Author item) {
         return authorRepository.update(item);
     }
 
+    @Override
     public boolean remove(int id) {
         return authorRepository.delete(id);
     }
 
+    @Override
     public List<Author> findAll() {
         return authorRepository.readAll();
     }

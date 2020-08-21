@@ -18,7 +18,11 @@ public enum Queries {
     READ_ALL_BOOKS("SELECT * FROM book;"),
     UPDATE_BOOK("UPDATE book SET name = ?, publishDate = ?, authorId = ? WHERE id = ?;"),
     DELETE_BOOK("DELETE FROM book where id = ?;"),
+    CREATE_USER("INSERT INTO user (name, password) VALUES (?, ?);"),
     READ_USER_BY_NAME("SELECT * FROM user WHERE name LIKE ?;"),
+    READ_ALL_USERS("SELECT * FROM user;"),
+    UPDATE_USER("UPDATE user SET name = ?, password = ? WHERE id = ?;"),
+    DELETE_USER("DELETE FROM user where id = ?;"),
     ;
     private final String query;
 

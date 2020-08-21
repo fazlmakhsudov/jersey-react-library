@@ -1,4 +1,4 @@
-package com.practice.library.util.dao;
+package com.practice.library.util.jdbc;
 
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;

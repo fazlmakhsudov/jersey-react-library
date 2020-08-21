@@ -9,16 +9,13 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Objects;
 
 @Path("/user")
 public class UserResource {
-    @Context
-    UriInfo uriInfo;
-    @Context
-    Request request;
-    UserService userService = new UserServiceImpl(new MySQLUserRepositoryImpl());
+    private final UserService userService = new UserServiceImpl(new MySQLUserRepositoryImpl());
 
     @POST
     @Path("/signin")
@@ -30,7 +27,7 @@ public class UserResource {
         if (Objects.isNull(foundUser)) {
             response = Response.noContent().build();
         } else if (!foundUser.getPassword().equals(user.getPassword())) {
-            response = Response.status(403).build();
+            response = Response.status(Response.Status.FORBIDDEN).build();
         } else {
             response = Response.ok(foundUser).build();
         }

@@ -5,26 +5,24 @@ import com.practice.library.model.BookModel;
 import com.practice.library.repository.impl.MySQLBookRepositoryImpl;
 import com.practice.library.service.BookService;
 import com.practice.library.service.impl.BookServiceImpl;
+import com.practice.library.util.EntityBuilder;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
 @Path("/book")
 public class BookResource {
-    @Context
-    UriInfo uriInfo;
-    @Context
-    Request request;
-    BookService bookService = new BookServiceImpl(new MySQLBookRepositoryImpl());
+    private final BookService bookService = new BookServiceImpl(new MySQLBookRepositoryImpl());
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addBook(BookModel bookModel) {
-        int id = bookService.add(BookModel.BookBuilder.buildBook(bookModel));
-        return id != -1 ? Response.status(201).build() : Response.serverError().build();
+        int id = bookService.add(EntityBuilder.buildBook(bookModel));
+        return id != -1 ? Response.status(Response.Status.CREATED).build() : Response.serverError().build();
     }
 
     @GET
@@ -51,7 +49,7 @@ public class BookResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateBook(BookModel bookModel) {
-        boolean flag = bookService.save(BookModel.BookBuilder.buildBook(bookModel));
+        boolean flag = bookService.save(EntityBuilder.buildBook(bookModel));
         return flag ? Response.ok().build() : Response.serverError().build();
     }
 

@@ -1,4 +1,4 @@
-package com.practice.library.util.dao;
+package com.practice.library.util.jdbc;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -45,6 +45,7 @@ public class DBUtilConnectionPool {
     }
 
     public Connection getConnectionFromPool() {
+        long time = System.currentTimeMillis();
         Connection connection = null;
         for (Connection conn : mapPoolOfConnections.keySet()) {
             if (!mapPoolOfConnections.get(conn)) {
@@ -53,18 +54,12 @@ public class DBUtilConnectionPool {
                 break;
             }
         }
-//        logger.log(Level.INFO, "getConnectionFromPool {0}",
-//                new String[]{this.printMapPoolOfConnection()});
         return connection;
     }
 
-    public Connection returnConnectionToPool(Connection connection) {
-
+    public void releaseConnection(Connection connection) {
         mapPoolOfConnections.replace(connection, false);
         connection = null;
-//        logger.log(Level.INFO, "returnConnectionToPool {0}",
-//                new String[]{this.printMapPoolOfConnection()});
-        return connection;
     }
 
 

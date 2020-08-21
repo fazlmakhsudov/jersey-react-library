@@ -4,8 +4,8 @@ import com.practice.library.entity.Author;
 import com.practice.library.entity.Book;
 import com.practice.library.repository.BookRepository;
 import com.practice.library.util.Queries;
-import com.practice.library.util.dao.DBUtilConnectionPool;
-import com.practice.library.util.dao.Property;
+import com.practice.library.util.jdbc.DBUtilConnectionPool;
+import com.practice.library.util.jdbc.Property;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +20,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     private static final Logger LOGGER = Logger.getLogger("MySQLBookRepository");
 
     public MySQLBookRepositoryImpl() {
-        Property property = new Property();
+        Property property = new Property("mysql");
         try {
             dbUtil = DBUtilConnectionPool.getInstance(property);
         } catch (Exception e) {
@@ -40,7 +40,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         if (rowInserted) {
             return book.getId();
         }
@@ -68,7 +68,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return book;
     }
 
@@ -94,7 +94,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return book;
     }
 
@@ -124,7 +124,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return book;
     }
 
@@ -180,7 +180,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return rowUpdated;
     }
 
@@ -194,7 +194,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return rowDeleted;
     }
 
@@ -220,7 +220,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return bookList;
     }
 }

@@ -13,10 +13,12 @@ public class BookServiceImpl implements BookService {
         this.bookRepository = bookRepository;
     }
 
+    @Override
     public int add(Book item) {
         return bookRepository.create(item);
     }
 
+    @Override
     public Book find(int id) {
         return bookRepository.read(id);
     }
@@ -31,14 +33,17 @@ public class BookServiceImpl implements BookService {
         return bookRepository.readByAuthor(name);
     }
 
+    @Override
     public boolean save(Book item) {
         return bookRepository.update(item);
     }
 
+    @Override
     public boolean remove(int id) {
         return bookRepository.delete(id);
     }
 
+    @Override
     public List<Book> findAll() {
         return bookRepository.readAll();
     }
