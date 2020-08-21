@@ -9,8 +9,6 @@ public interface BaseRepository<T> {
 
     T read(int id);
 
-    T read(String name);
-
     boolean update(T item);
 
     boolean delete(int id);

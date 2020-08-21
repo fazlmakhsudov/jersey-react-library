@@ -4,4 +4,6 @@ import com.practice.library.entity.Book;
 
 public interface BookRepository extends BaseRepository<Book> {
     Book readByAuthor(String name);
+
+    Book read(String name);
 }

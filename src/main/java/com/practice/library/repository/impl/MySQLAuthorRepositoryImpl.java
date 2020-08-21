@@ -4,8 +4,8 @@ import com.practice.library.entity.Author;
 import com.practice.library.entity.Book;
 import com.practice.library.repository.AuthorRepository;
 import com.practice.library.util.Queries;
-import com.practice.library.util.dao.DBUtilConnectionPool;
-import com.practice.library.util.dao.Property;
+import com.practice.library.util.jdbc.DBUtilConnectionPool;
+import com.practice.library.util.jdbc.Property;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +20,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     private static final Logger LOGGER = Logger.getLogger("MySQLAuthorRepository");
 
     public MySQLAuthorRepositoryImpl() {
-        Property property = new Property();
+        Property property = new Property("mysql");
         try {
             dbUtil = DBUtilConnectionPool.getInstance(property);
         } catch (Exception e) {
@@ -39,7 +39,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         if (rowInserted) {
             return author.getId();
         }
@@ -69,7 +69,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
             return author;
         }
         author.setBooks(getBooks(author.getId(), cn));
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return author;
     }
 
@@ -97,7 +97,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
             return author;
         }
         author.setBooks(getBooks(author.getId(), cn));
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return author;
     }
 
@@ -135,7 +135,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return rowUpdated;
     }
 
@@ -149,7 +149,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return rowDeleted;
     }
 
@@ -176,7 +176,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
         for (Author author : authorList) {
             author.setBooks(getBooks(author.getId(), cn));
         }
-        dbUtil.returnConnectionToPool(cn);
+        dbUtil.releaseConnection(cn);
         return authorList;
     }
 }

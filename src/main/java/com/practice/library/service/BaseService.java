@@ -8,8 +8,6 @@ public interface BaseService<T> {
 
     T find(int id);
 
-    T find(String name);
-
     boolean save(T item);
 
     boolean remove(int id);
