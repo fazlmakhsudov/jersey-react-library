@@ -211,7 +211,7 @@ function Book(props) {
                 <strong>Author:</strong>
               </Col>
               <Col md={7} xs={6} className=''>
-                {item.author.name}
+                {/* {item.author.name} */} {getAuthorName(item.authorId)}
               </Col>
             </Row>
             {
@@ -245,6 +245,11 @@ function Book(props) {
     }
   }
 
+  function getAuthorName(authorId) {
+    let author = authors.find(author => Object.is(author.id, authorId));
+    return author.name;
+  }
+
   function formBooksHtml(items) {
     let htmls = [];
     items.map((item, index) => {
@@ -269,7 +274,7 @@ function Book(props) {
     setName(item.name);
     let date = new Date(item.publishDate.year, item.publishDate.monthValue - 1, item.publishDate.dayOfMonth);
     setPublishDate(date);
-    setAuthorName(item.author.name);
+    setAuthorName(getAuthorName(item.authorId));
     if (deleteFlag) {
       setDeleteFlag(true)
     } else {
@@ -348,7 +353,7 @@ function Book(props) {
     setName(item.name);
     let date = new Date(item.publishDate.year, item.publishDate.monthValue - 1, item.publishDate.dayOfMonth);
     setPublishDate(date);
-    setAuthorName(item.author.name);
+    setAuthorName(getAuthorName(item.authorId));
     setChooseModalBodyFlag(true);
   }
   useEffect(() => {

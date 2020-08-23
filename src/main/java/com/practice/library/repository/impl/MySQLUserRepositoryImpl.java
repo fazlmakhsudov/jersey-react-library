@@ -1,10 +1,10 @@
 package com.practice.library.repository.impl;
 
-import com.practice.library.entity.User;
+import com.practice.library.entity.UserEntity;
 import com.practice.library.repository.UserRepository;
 import com.practice.library.util.Queries;
-import com.practice.library.util.jdbc.DBUtilConnectionPool;
-import com.practice.library.util.jdbc.Property;
+import com.practice.library.util.db.DBUtilConnectionPool;
+import com.practice.library.util.db.Property;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +28,7 @@ public class MySQLUserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public int create(User user) {
+    public int create(UserEntity user) {
         Connection cn = dbUtil.getConnectionFromPool();
         boolean rowInserted = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.CREATE_USER.getQuery())) {
@@ -46,8 +46,8 @@ public class MySQLUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User read(int id) {
-        User user = null;
+    public UserEntity read(int id) {
+        UserEntity user = null;
         Connection cn = dbUtil.getConnectionFromPool();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_AUTHOR_BY_ID.getQuery())) {
             statement.setInt(1, id);
@@ -67,8 +67,8 @@ public class MySQLUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User read(String name) {
-        User user = null;
+    public UserEntity read(String name) {
+        UserEntity user = null;
         Connection cn = dbUtil.getConnectionFromPool();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_USER_BY_NAME.getQuery())) {
             statement.setString(1, '%' + name + '%');
@@ -77,7 +77,7 @@ public class MySQLUserRepositoryImpl implements UserRepository {
                     int id = resultSet.getInt(1);
                     String userName = resultSet.getString(2);
                     String password = resultSet.getString(3);
-                    user = new User(id, userName, password);
+                    user = new UserEntity(id, userName, password);
                 }
             }
         } catch (Exception e) {
@@ -92,16 +92,16 @@ public class MySQLUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> readAll() {
+    public List<UserEntity> readAll() {
         Connection cn = dbUtil.getConnectionFromPool();
-        List<User> userList = new ArrayList<>();
+        List<UserEntity> userList = new ArrayList<>();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_ALL_AUTHORS.getQuery())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     int id = resultSet.getInt(1);
                     String name = resultSet.getString(2);
                     String password = resultSet.getString(3);
-                    User user = new User(id, name, password);
+                    UserEntity user = new UserEntity(id, name, password);
                     userList.add(user);
                 }
             }
@@ -113,7 +113,7 @@ public class MySQLUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean update(User user) {
+    public boolean update(UserEntity user) {
         Connection cn = dbUtil.getConnectionFromPool();
         boolean rowUpdated = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.UPDATE_USER.getQuery())) {

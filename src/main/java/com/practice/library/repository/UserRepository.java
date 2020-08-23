@@ -1,7 +1,7 @@
 package com.practice.library.repository;
 
-import com.practice.library.entity.User;
+import com.practice.library.entity.UserEntity;
 
-public interface UserRepository extends BaseRepository<User> {
-    User read(String name);
+public interface UserRepository extends BaseRepository<UserEntity> {
+    UserEntity read(String name);
 }

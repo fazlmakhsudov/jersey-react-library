@@ -12,7 +12,6 @@ function ModalWindow(props) {
     const [password, setPassword] = useState('');
 
     function checkCredential() {
-        console.log('check credentioal:', name, password);
         axios({
             'method': 'POST',
             'url': url + "/signin",
@@ -20,7 +19,6 @@ function ModalWindow(props) {
                 'Content-Type': 'application/json',
             },
             data: {
-                id : 1,
                 name: name,
                 password: password,
             }

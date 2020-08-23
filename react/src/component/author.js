@@ -253,7 +253,7 @@ function Author(props) {
   function formBooksOfAuthor(authorId) {
     let authorBook = [];
     books.map(book => {
-      if (book.author.id === authorId) {
+      if (book.authorId === authorId) {
         authorBook.push(book);
       }
     });

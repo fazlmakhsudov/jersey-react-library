@@ -1,11 +1,11 @@
 package com.practice.library.repository.impl;
 
-import com.practice.library.entity.Author;
-import com.practice.library.entity.Book;
+import com.practice.library.entity.AuthorEntity;
+import com.practice.library.entity.BookEntity;
 import com.practice.library.repository.AuthorRepository;
 import com.practice.library.util.Queries;
-import com.practice.library.util.jdbc.DBUtilConnectionPool;
-import com.practice.library.util.jdbc.Property;
+import com.practice.library.util.db.DBUtilConnectionPool;
+import com.practice.library.util.db.Property;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +29,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public int create(Author author) {
+    public int create(AuthorEntity author) {
         Connection cn = dbUtil.getConnectionFromPool();
         boolean rowInserted = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.CREATE_AUTHOR.getQuery())) {
@@ -47,8 +47,8 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public Author read(int id) {
-        Author author = null;
+    public AuthorEntity read(int id) {
+        AuthorEntity author = null;
         Connection cn = dbUtil.getConnectionFromPool();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_AUTHOR_BY_ID.getQuery())) {
             statement.setInt(1, id);
@@ -56,7 +56,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
                 if (resultSet.next()) {
                     String name = resultSet.getString(2);
                     LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
-                    author = new Author();
+                    author = new AuthorEntity();
                     author.setId(id);
                     author.setName(name);
                     author.setBirthdate(birthdate);
@@ -74,8 +74,8 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public Author read(String name) {
-        Author author = null;
+    public AuthorEntity read(String name) {
+        AuthorEntity author = null;
         Connection cn = dbUtil.getConnectionFromPool();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_AUTHOR_BY_NAME.getQuery())) {
             statement.setString(1, '%' + name + '%');
@@ -84,7 +84,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
                     int id = Integer.parseInt(resultSet.getString(1));
                     String nameOriginal = resultSet.getString(2);
                     LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
-                    author = new Author();
+                    author = new AuthorEntity();
                     author.setId(id);
                     author.setName(nameOriginal);
                     author.setBirthdate(birthdate);
@@ -101,8 +101,8 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
         return author;
     }
 
-    private List<Book> getBooks(int authorId, Connection cn) {
-        List<Book> books = new ArrayList<>();
+    private List<BookEntity> getBooks(int authorId, Connection cn) {
+        List<BookEntity> books = new ArrayList<>();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_AUTHOR_BOOKS.getQuery())) {
             statement.setInt(1, authorId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -110,7 +110,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
                     int bookId = resultSet.getInt(1);
                     String name = resultSet.getString(2);
                     LocalDate publishDate = LocalDate.parse(resultSet.getString(3));
-                    Book book = new Book();
+                    BookEntity book = new BookEntity();
                     book.setId(bookId);
                     book.setName(name);
                     book.setPublishDate(publishDate);
@@ -124,7 +124,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public boolean update(Author author) {
+    public boolean update(AuthorEntity author) {
         Connection cn = dbUtil.getConnectionFromPool();
         boolean rowUpdated = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.UPDATE_AUTHOR.getQuery())) {
@@ -154,16 +154,16 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     }
 
     @Override
-    public List<Author> readAll() {
+    public List<AuthorEntity> readAll() {
         Connection cn = dbUtil.getConnectionFromPool();
-        List<Author> authorList = new ArrayList<>();
+        List<AuthorEntity> authorList = new ArrayList<>();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_ALL_AUTHORS.getQuery())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     int id = resultSet.getInt(1);
                     String name = resultSet.getString(2);
                     LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
-                    Author author = new Author();
+                    AuthorEntity author = new AuthorEntity();
                     author.setId(id);
                     author.setName(name);
                     author.setBirthdate(birthdate);
@@ -173,7 +173,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
-        for (Author author : authorList) {
+        for (AuthorEntity author : authorList) {
             author.setBooks(getBooks(author.getId(), cn));
         }
         dbUtil.releaseConnection(cn);

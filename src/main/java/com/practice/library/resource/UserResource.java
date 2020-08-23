@@ -1,6 +1,7 @@
 package com.practice.library.resource;
 
-import com.practice.library.entity.User;
+import com.practice.library.entity.UserEntity;
+import com.practice.library.model.UserRequestModel;
 import com.practice.library.repository.impl.MySQLUserRepositoryImpl;
 import com.practice.library.service.UserService;
 import com.practice.library.service.impl.UserServiceImpl;
@@ -21,12 +22,12 @@ public class UserResource {
     @Path("/signin")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAuthors(User user) {
-        User foundUser = userService.find(user.getName());
+    public Response getAuthors(UserRequestModel userModel) {
+        UserEntity foundUser = userService.find(userModel.getName());
         Response response = null;
         if (Objects.isNull(foundUser)) {
             response = Response.noContent().build();
-        } else if (!foundUser.getPassword().equals(user.getPassword())) {
+        } else if (!foundUser.getPassword().equals(userModel.getPassword())) {
             response = Response.status(Response.Status.FORBIDDEN).build();
         } else {
             response = Response.ok(foundUser).build();

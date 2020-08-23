@@ -1,9 +1,9 @@
 package com.practice.library.repository;
 
-import com.practice.library.entity.Book;
+import com.practice.library.entity.BookEntity;
 
-public interface BookRepository extends BaseRepository<Book> {
-    Book readByAuthor(String name);
+public interface BookRepository extends BaseRepository<BookEntity> {
+    BookEntity readByAuthor(String name);
 
-    Book read(String name);
+    BookEntity read(String name);
 }

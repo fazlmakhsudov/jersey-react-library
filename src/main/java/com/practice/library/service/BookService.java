@@ -1,10 +1,10 @@
 package com.practice.library.service;
 
 
-import com.practice.library.entity.Book;
+import com.practice.library.entity.BookEntity;
 
-public interface BookService extends BaseService<Book> {
-    Book findByAuthor(String name);
+public interface BookService extends BaseService<BookEntity> {
+    BookEntity findByAuthor(String name);
 
-    Book find(String name);
+    BookEntity find(String name);
 }

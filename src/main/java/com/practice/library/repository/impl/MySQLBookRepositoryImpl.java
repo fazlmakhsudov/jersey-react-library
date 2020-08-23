@@ -1,15 +1,16 @@
 package com.practice.library.repository.impl;
 
-import com.practice.library.entity.Author;
-import com.practice.library.entity.Book;
+import com.practice.library.entity.AuthorEntity;
+import com.practice.library.entity.BookEntity;
 import com.practice.library.repository.BookRepository;
 import com.practice.library.util.Queries;
-import com.practice.library.util.jdbc.DBUtilConnectionPool;
-import com.practice.library.util.jdbc.Property;
+import com.practice.library.util.db.DBUtilConnectionPool;
+import com.practice.library.util.db.Property;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public int create(Book book) {
+    public int create(BookEntity book) {
         Connection cn = dbUtil.getConnectionFromPool();
         boolean rowInserted = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.CREATE_BOOK.getQuery())) {
@@ -48,8 +49,8 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public Book read(int id) {
-        Book book = null;
+    public BookEntity read(int id) {
+        BookEntity book = null;
         Connection cn = dbUtil.getConnectionFromPool();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_BOOK_BY_ID.getQuery())) {
             statement.setInt(1, id);
@@ -57,12 +58,11 @@ public class MySQLBookRepositoryImpl implements BookRepository {
                 if (resultSet.next()) {
                     String name = resultSet.getString(2);
                     LocalDate publishDate = LocalDate.parse(resultSet.getString(3));
-                    int authorId = resultSet.getInt(4);
-                    book = new Book();
+                    book = new BookEntity();
                     book.setId(id);
                     book.setName(name);
                     book.setPublishDate(publishDate);
-                    book.setAuthor(getAuthor(authorId, cn));
+                    book.setAuthor(getAuthor(resultSet));
                 }
             }
         } catch (Exception e) {
@@ -73,8 +73,8 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public Book read(String name) {
-        Book book = null;
+    public BookEntity read(String name) {
+        BookEntity book = null;
         Connection cn = dbUtil.getConnectionFromPool();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_BOOK_BY_NAME.getQuery())) {
             statement.setString(1, '%' + name + '%');
@@ -83,12 +83,11 @@ public class MySQLBookRepositoryImpl implements BookRepository {
                     int id = resultSet.getInt(1);
                     String nameOriginal = resultSet.getString(2);
                     LocalDate publishDate = LocalDate.parse(resultSet.getString(3));
-                    int authorId = resultSet.getInt(4);
-                    book = new Book();
+                    book = new BookEntity();
                     book.setId(id);
                     book.setName(nameOriginal);
                     book.setPublishDate(publishDate);
-                    book.setAuthor(getAuthor(authorId, cn));
+                    book.setAuthor(getAuthor(resultSet));
                 }
             }
         } catch (Exception e) {
@@ -99,26 +98,21 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public Book readByAuthor(String name) {
-        Book book = null;
+    public BookEntity readByAuthor(String name) {
+        BookEntity book = null;
         Connection cn = dbUtil.getConnectionFromPool();
-        try (PreparedStatement statement = cn.prepareStatement(Queries.READ_BOOK_BY_AUTHOR_ID.getQuery())) {
-            Author author = getAuthor(name, cn);
-            if (author == null) {
-                return null;
-            }
-            statement.setInt(1, author.getId());
+        try (PreparedStatement statement = cn.prepareStatement(Queries.READ_BOOK_BY_AUTHOR_NAME.getQuery())) {
+            statement.setString(1, '%' + name + '%');
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     int id = resultSet.getInt(1);
                     String nameOriginal = resultSet.getString(2);
                     LocalDate publishDate = LocalDate.parse(resultSet.getString(3));
-                    int authorId = resultSet.getInt(4);
-                    book = new Book();
+                    book = new BookEntity();
                     book.setId(id);
                     book.setName(nameOriginal);
                     book.setPublishDate(publishDate);
-                    book.setAuthor(getAuthor(authorId, cn));
+                    book.setAuthor(getAuthor(resultSet));
                 }
             }
         } catch (Exception e) {
@@ -128,47 +122,19 @@ public class MySQLBookRepositoryImpl implements BookRepository {
         return book;
     }
 
-    private Author getAuthor(int authorId, Connection cn) {
-        Author author = new Author();
-        try (PreparedStatement statement = cn.prepareStatement(Queries.READ_AUTHOR_BY_ID.getQuery())) {
-            statement.setInt(1, authorId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    String name = resultSet.getString(2);
-                    LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
-                    author.setId(authorId);
-                    author.setName(name);
-                    author.setBirthdate(birthdate);
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.severe(e.getMessage());
-        }
-        return author;
-    }
-
-    private Author getAuthor(String authorName, Connection cn) {
-        Author author = new Author();
-        try (PreparedStatement statement = cn.prepareStatement(Queries.READ_AUTHOR_BY_NAME.getQuery())) {
-            statement.setString(1, '%' + authorName + '%');
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    String name = resultSet.getString(2);
-                    LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
-                    author.setId(id);
-                    author.setName(name);
-                    author.setBirthdate(birthdate);
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.severe(e.getMessage());
-        }
+    private AuthorEntity getAuthor(ResultSet resultSet) throws SQLException {
+        AuthorEntity author = new AuthorEntity();
+        int id = resultSet.getInt(5);
+        String name = resultSet.getString(6);
+        LocalDate birthdate = LocalDate.parse(resultSet.getString(7));
+        author.setId(id);
+        author.setName(name);
+        author.setBirthdate(birthdate);
         return author;
     }
 
     @Override
-    public boolean update(Book book) {
+    public boolean update(BookEntity book) {
         Connection cn = dbUtil.getConnectionFromPool();
         boolean rowUpdated = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.UPDATE_BOOK.getQuery())) {
@@ -199,21 +165,20 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> readAll() {
+    public List<BookEntity> readAll() {
         Connection cn = dbUtil.getConnectionFromPool();
-        List<Book> bookList = new ArrayList<>();
+        List<BookEntity> bookList = new ArrayList<>();
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_ALL_BOOKS.getQuery())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     int id = resultSet.getInt(1);
                     String name = resultSet.getString(2);
                     LocalDate publishDate = LocalDate.parse(resultSet.getString(3));
-                    int authorId = resultSet.getInt(4);
-                    Book book = new Book();
+                    BookEntity book = new BookEntity();
                     book.setId(id);
                     book.setName(name);
                     book.setPublishDate(publishDate);
-                    book.setAuthor(getAuthor(authorId, cn));
+                    book.setAuthor(getAuthor(resultSet));
                     bookList.add(book);
                 }
             }

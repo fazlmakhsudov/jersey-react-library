@@ -1,6 +1,6 @@
 package com.practice.library.service.impl;
 
-import com.practice.library.entity.User;
+import com.practice.library.entity.UserEntity;
 import com.practice.library.repository.UserRepository;
 import com.practice.library.service.UserService;
 
@@ -14,22 +14,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int add(User item) {
+    public int add(UserEntity item) {
         return 0;
     }
 
     @Override
-    public User find(int id) {
+    public UserEntity find(int id) {
         return null;
     }
 
     @Override
-    public User find(String name) {
+    public UserEntity find(String name) {
         return userRepository.read(name);
     }
 
     @Override
-    public boolean save(User item) {
+    public boolean save(UserEntity item) {
         return false;
     }
 
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<UserEntity> findAll() {
         return null;
     }
 }

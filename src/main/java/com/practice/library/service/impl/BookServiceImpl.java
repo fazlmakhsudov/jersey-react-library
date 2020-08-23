@@ -1,6 +1,6 @@
 package com.practice.library.service.impl;
 
-import com.practice.library.entity.Book;
+import com.practice.library.entity.BookEntity;
 import com.practice.library.repository.BookRepository;
 import com.practice.library.service.BookService;
 
@@ -14,27 +14,27 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public int add(Book item) {
+    public int add(BookEntity item) {
         return bookRepository.create(item);
     }
 
     @Override
-    public Book find(int id) {
+    public BookEntity find(int id) {
         return bookRepository.read(id);
     }
 
     @Override
-    public Book find(String name) {
+    public BookEntity find(String name) {
         return bookRepository.read(name);
     }
 
     @Override
-    public Book findByAuthor(String name) {
+    public BookEntity findByAuthor(String name) {
         return bookRepository.readByAuthor(name);
     }
 
     @Override
-    public boolean save(Book item) {
+    public boolean save(BookEntity item) {
         return bookRepository.update(item);
     }
 
@@ -44,7 +44,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findAll() {
+    public List<BookEntity> findAll() {
         return bookRepository.readAll();
     }
 }
