@@ -22,9 +22,9 @@ public class UserResource {
     @Path("/signin")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAuthors(UserRequestModel userModel) {
+    public Response getUser(UserRequestModel userModel) {
         UserEntity foundUser = userService.find(userModel.getName());
-        Response response = null;
+        Response response;
         if (Objects.isNull(foundUser)) {
             response = Response.noContent().build();
         } else if (!foundUser.getPassword().equals(userModel.getPassword())) {

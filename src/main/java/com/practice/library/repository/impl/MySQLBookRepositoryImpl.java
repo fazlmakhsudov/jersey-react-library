@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class MySQLBookRepositoryImpl implements BookRepository {
@@ -32,6 +33,10 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     @Override
     public int create(BookEntity book) {
         Connection cn = dbUtil.getConnectionFromPool();
+        if (Objects.isNull(cn)) {
+            LOGGER.info("create(): No available connection");
+            return -1;
+        }
         boolean rowInserted = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.CREATE_BOOK.getQuery())) {
             statement.setString(1, book.getName());
@@ -52,6 +57,10 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     public BookEntity read(int id) {
         BookEntity book = null;
         Connection cn = dbUtil.getConnectionFromPool();
+        if (Objects.isNull(cn)) {
+            LOGGER.info("read(): No available connection");
+            return null;
+        }
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_BOOK_BY_ID.getQuery())) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -76,6 +85,10 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     public BookEntity read(String name) {
         BookEntity book = null;
         Connection cn = dbUtil.getConnectionFromPool();
+        if (Objects.isNull(cn)) {
+            LOGGER.info("read(): No available connection");
+            return null;
+        }
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_BOOK_BY_NAME.getQuery())) {
             statement.setString(1, '%' + name + '%');
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -101,6 +114,10 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     public BookEntity readByAuthor(String name) {
         BookEntity book = null;
         Connection cn = dbUtil.getConnectionFromPool();
+        if (Objects.isNull(cn)) {
+            LOGGER.info("readByAuthor(): No available connection");
+            return null;
+        }
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_BOOK_BY_AUTHOR_NAME.getQuery())) {
             statement.setString(1, '%' + name + '%');
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -136,6 +153,10 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     @Override
     public boolean update(BookEntity book) {
         Connection cn = dbUtil.getConnectionFromPool();
+        if (Objects.isNull(cn)) {
+            LOGGER.info("update(): No available connection");
+            return false;
+        }
         boolean rowUpdated = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.UPDATE_BOOK.getQuery())) {
             statement.setString(1, book.getName());
@@ -153,6 +174,10 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     @Override
     public boolean delete(int id) {
         Connection cn = dbUtil.getConnectionFromPool();
+        if (Objects.isNull(cn)) {
+            LOGGER.info("delete(): No available connection");
+            return false;
+        }
         boolean rowDeleted = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.DELETE_BOOK.getQuery())) {
             statement.setInt(1, id);
@@ -168,6 +193,10 @@ public class MySQLBookRepositoryImpl implements BookRepository {
     public List<BookEntity> readAll() {
         Connection cn = dbUtil.getConnectionFromPool();
         List<BookEntity> bookList = new ArrayList<>();
+        if (Objects.isNull(cn)) {
+            LOGGER.info("readAll(): No available connection");
+            return bookList;
+        }
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_ALL_BOOKS.getQuery())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {

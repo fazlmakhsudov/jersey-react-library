@@ -6,7 +6,7 @@ import com.practice.library.model.AuthorRequestModel;
 import java.time.LocalDate;
 
 public class AuthorEntityBuilder {
-    public static AuthorEntity create(AuthorRequestModel authorModel) {
+    public AuthorEntity create(AuthorRequestModel authorModel) {
         AuthorEntity author = new AuthorEntity();
         author.setId(authorModel.getId());
         author.setName(authorModel.getName());

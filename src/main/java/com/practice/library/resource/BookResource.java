@@ -19,12 +19,13 @@ public class BookResource {
     private final BookService bookService = new BookServiceImpl(new MySQLBookRepositoryImpl());
     //    @Inject
     private final BookResponseModelBuilder bookResponseModelBuilder = new BookResponseModelBuilder();
+    private final BookEntityBuilder bookEntityBuilder = new BookEntityBuilder();
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addBook(BookRequestModel bookModel) {
-        int id = bookService.add(BookEntityBuilder.create(bookModel));
+        int id = bookService.add(bookEntityBuilder.create(bookModel));
         return id != -1 ? Response.status(Response.Status.CREATED).build() : Response.serverError().build();
     }
 
@@ -50,7 +51,7 @@ public class BookResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateBook(BookRequestModel bookModel) {
-        boolean flag = bookService.save(BookEntityBuilder.create(bookModel));
+        boolean flag = bookService.save(bookEntityBuilder.create(bookModel));
         return flag ? Response.ok().build() : Response.serverError().build();
     }
 

@@ -7,7 +7,7 @@ import com.practice.library.model.BookRequestModel;
 import java.time.LocalDate;
 
 public class BookEntityBuilder {
-    public static BookEntity create(BookRequestModel bookModel) {
+    public BookEntity create(BookRequestModel bookModel) {
         BookEntity book = new BookEntity();
         book.setId(bookModel.getId());
         book.setName(bookModel.getName());

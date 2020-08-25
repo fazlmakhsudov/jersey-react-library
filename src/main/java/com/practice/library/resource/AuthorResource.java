@@ -20,12 +20,13 @@ public class AuthorResource {
     private final AuthorService authorService = new AuthorServiceImpl(new MySQLAuthorRepositoryImpl());
     //    @Inject
     private final AuthorResponseModelBuilder authorResponseModelBuilder = new AuthorResponseModelBuilder();
+    private final AuthorEntityBuilder authorEntityBuilder = new AuthorEntityBuilder();
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addAuthor(AuthorRequestModel authorModel) {
-        int id = authorService.add(AuthorEntityBuilder.create(authorModel));
+        int id = authorService.add(authorEntityBuilder.create(authorModel));
         return id != -1 ? Response.status(Response.Status.CREATED).build() : Response.serverError().build();
     }
 
@@ -48,7 +49,7 @@ public class AuthorResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateAuthor(AuthorRequestModel authorModel) {
-        boolean flag = authorService.save(AuthorEntityBuilder.create(authorModel));
+        boolean flag = authorService.save(authorEntityBuilder.create(authorModel));
         return flag ? Response.ok().build() : Response.serverError().build();
     }
 

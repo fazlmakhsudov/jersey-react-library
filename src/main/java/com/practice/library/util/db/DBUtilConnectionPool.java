@@ -45,7 +45,6 @@ public class DBUtilConnectionPool {
     }
 
     public Connection getConnectionFromPool() {
-        long time = System.currentTimeMillis();
         Connection connection = null;
         for (Connection conn : mapPoolOfConnections.keySet()) {
             if (!mapPoolOfConnections.get(conn)) {
