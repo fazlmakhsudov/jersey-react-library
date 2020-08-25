@@ -12,13 +12,9 @@ public enum Queries {
     UPDATE_AUTHOR("UPDATE author SET name = ?, birthdate = ? WHERE id = ?;"),
     DELETE_AUTHOR("DELETE FROM author where id = ?;"),
     CREATE_BOOK("INSERT INTO book (name, publishDate, authorId) VALUES (?, ?, ?);"),
-    READ_BOOK_BY_ID("select * from (SELECT * FROM book WHERE id = ?) as findBook " +
-            "inner join author ON findBook.authorId = author.id;"),
-    READ_BOOK_BY_NAME("select * from (SELECT * FROM book WHERE name LIKE ?) as findBook " +
-            "inner join author ON findBook.authorId = author.id;"),
-    READ_BOOK_BY_AUTHOR_NAME("SELECT * FROM book inner join " +
-            "(select * from author where name like ?) as findAuthors " +
-            "where book.authorId = findAuthors.id;"),
+    READ_BOOK_BY_ID("select * from book b inner join author a ON b.authorId = a.id WHERE b.id = ?;"),
+    READ_BOOK_BY_NAME("select * from book b inner join author a ON b.authorId = a.id WHERE b.name LIKE ?;"),
+    READ_BOOK_BY_AUTHOR_NAME("select * from book b inner join author a ON b.authorId = a.id WHERE a.name LIKE ?;"),
     READ_ALL_BOOKS("SELECT * FROM book inner join author ON book.authorId = author.id;"),
     UPDATE_BOOK("UPDATE book SET name = ?, publishDate = ?, authorId = ? WHERE id = ?;"),
     DELETE_BOOK("DELETE FROM book where id = ?;"),
