@@ -13,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Objects;
 
 @Path("/book")
 public class BookResource {
@@ -38,13 +39,14 @@ public class BookResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{searchParameter}")
-    public BookResponseModel getBook(@PathParam("searchParameter") String searchParameter) {
+    public Response getBook(@PathParam("searchParameter") String searchParameter) {
         BookEntity book = searchParameter.matches("\\d+") ?
                 bookService.find(Integer.parseInt(searchParameter)) : bookService.find(searchParameter);
         if (book == null) {
             book = bookService.findByAuthor(searchParameter);
         }
-        return bookResponseModelBuilder.create(book);
+        return Objects.isNull(book) ? Response.status(Response.Status.NOT_FOUND).build() :
+                Response.ok(bookResponseModelBuilder.create(book)).build();
     }
 
     @PUT

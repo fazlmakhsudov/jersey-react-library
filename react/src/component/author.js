@@ -81,15 +81,14 @@ function Author(props) {
         'Content-Type': 'application/json',
       },
     }).then(response => {
-      if (response.status === 200) {
-        setSearchText('');
+      if (response.status === 200) { 
         setData(formAuthorHtml(response.data));
       } else {
-        alert("There is no author with id: " + searchText);
-        setSearchText('');
+        alert("There is no author: " + searchText);
       }
+      setSearchText('');
     }).catch(error => {
-      alert('can\'t read author \n' + error);
+      alert('no such author');
       setSearchText('');
     });
   }

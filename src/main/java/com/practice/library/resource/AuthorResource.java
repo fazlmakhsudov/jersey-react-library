@@ -13,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Objects;
 
 
 @Path("/author")
@@ -39,10 +40,11 @@ public class AuthorResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{searchParameter}")
-    public AuthorResponseModel getAuthor(@PathParam("searchParameter") String searchParameter) {
+    public Response getAuthor(@PathParam("searchParameter") String searchParameter) {
         AuthorEntity authorEntity = searchParameter.matches("\\d+") ?
                 authorService.find(Integer.parseInt(searchParameter)) : authorService.find(searchParameter);
-        return authorResponseModelBuilder.create(authorEntity);
+        return Objects.isNull(authorEntity) ? Response.status(Response.Status.NOT_FOUND).build() :
+                Response.ok(authorResponseModelBuilder.create(authorEntity)).build();
     }
 
     @PUT
