@@ -7,11 +7,11 @@ import java.time.LocalDate;
 
 public class AuthorEntityBuilder {
     public AuthorEntity create(AuthorRequestModel authorModel) {
-        AuthorEntity author = new AuthorEntity();
-        author.setId(authorModel.getId());
-        author.setName(authorModel.getName());
-        LocalDate localDate = LocalDate.parse(authorModel.getBirthdate());
-        author.setBirthdate(localDate);
+        AuthorEntity author = AuthorEntity.builder()
+                .id(authorModel.getId())
+                .name(authorModel.getName())
+                .birthdate(LocalDate.parse(authorModel.getBirthdate()))
+                .build();
         return author;
     }
 }

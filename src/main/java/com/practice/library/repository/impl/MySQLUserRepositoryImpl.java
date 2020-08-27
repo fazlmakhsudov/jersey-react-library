@@ -62,9 +62,11 @@ public class MySQLUserRepositoryImpl implements UserRepository {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    String userName = resultSet.getString(2);
-                    String password = resultSet.getString(3);
-                    user = new UserEntity(id, userName, password);
+                    user = UserEntity.builder()
+                            .id(id)
+                            .name(resultSet.getString("name"))
+                            .password(resultSet.getString("password"))
+                            .build();
                 }
             }
         } catch (Exception e) {
@@ -86,10 +88,11 @@ public class MySQLUserRepositoryImpl implements UserRepository {
             statement.setString(1, '%' + name + '%');
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    String userName = resultSet.getString(2);
-                    String password = resultSet.getString(3);
-                    user = new UserEntity(id, userName, password);
+                    user = UserEntity.builder()
+                            .id(resultSet.getInt("id"))
+                            .name(resultSet.getString("name"))
+                            .password(resultSet.getString("password"))
+                            .build();
                 }
             }
         } catch (Exception e) {
@@ -110,10 +113,11 @@ public class MySQLUserRepositoryImpl implements UserRepository {
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_ALL_AUTHORS.getQuery())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    String name = resultSet.getString(2);
-                    String password = resultSet.getString(3);
-                    UserEntity user = new UserEntity(id, name, password);
+                    UserEntity user = UserEntity.builder()
+                            .id(resultSet.getInt("id"))
+                            .name(resultSet.getString("name"))
+                            .password(resultSet.getString("password"))
+                            .build();
                     userList.add(user);
                 }
             }

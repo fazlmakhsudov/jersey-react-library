@@ -12,10 +12,19 @@ public enum Queries {
     UPDATE_AUTHOR("UPDATE author SET name = ?, birthdate = ? WHERE id = ?;"),
     DELETE_AUTHOR("DELETE FROM author where id = ?;"),
     CREATE_BOOK("INSERT INTO book (name, publishDate, authorId) VALUES (?, ?, ?);"),
-    READ_BOOK_BY_ID("select * from book b inner join author a ON b.authorId = a.id WHERE b.id = ?;"),
-    READ_BOOK_BY_NAME("select * from book b inner join author a ON b.authorId = a.id WHERE b.name LIKE ?;"),
-    READ_BOOK_BY_AUTHOR_NAME("select * from book b inner join author a ON b.authorId = a.id WHERE a.name LIKE ?;"),
-    READ_ALL_BOOKS("SELECT * FROM book inner join author ON book.authorId = author.id;"),
+
+    READ_BOOK_BY_ID("select b.id bookId, b.name bookName, b.publishDate, " +
+            "b.authorId, a.id, a.name, a.birthdate from book b inner join author a " +
+            "ON b.authorId = a.id WHERE b.id = ?;"),
+
+    READ_BOOK_BY_NAME("select b.id bookId, b.name bookName, b.publishDate, b.authorId, " +
+            "a.id, a.name, a.birthdate from book b inner join author a ON b.authorId = a.id WHERE b.name LIKE ?;"),
+
+    READ_BOOK_BY_AUTHOR_NAME("select b.id bookId, b.name bookName, b.publishDate, b.authorId, " +
+            "a.id, a.name, a.birthdate from book b inner join author a ON b.authorId = a.id WHERE a.name LIKE ?;"),
+
+    READ_ALL_BOOKS("select b.id bookId, b.name bookName, b.publishDate, b.authorId, " +
+            "a.id, a.name, a.birthdate FROM book b inner join author a ON b.authorId = a.id;"),
     UPDATE_BOOK("UPDATE book SET name = ?, publishDate = ?, authorId = ? WHERE id = ?;"),
     DELETE_BOOK("DELETE FROM book where id = ?;"),
     CREATE_USER("INSERT INTO user (name, password) VALUES (?, ?);"),

@@ -11,11 +11,12 @@ import java.util.stream.Collectors;
 @Stateless
 public class BookResponseModelBuilder {
     public BookResponseModel create(BookEntity bookEntity) {
-        BookResponseModel bookResponseModel = new BookResponseModel();
-        bookResponseModel.setId(bookEntity.getId());
-        bookResponseModel.setName(bookEntity.getName());
-        bookResponseModel.setPublishDate(bookEntity.getPublishDate());
-        bookResponseModel.setAuthorId(bookEntity.getAuthor().getId());
+        BookResponseModel bookResponseModel = BookResponseModel.builder()
+                .id(bookEntity.getId())
+                .name(bookEntity.getName())
+                .publishDate(bookEntity.getPublishDate())
+                .authorId(bookEntity.getAuthor().getId())
+                .build();
         return bookResponseModel;
     }
 

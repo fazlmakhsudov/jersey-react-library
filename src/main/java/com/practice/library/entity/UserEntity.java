@@ -1,12 +1,14 @@
 package com.practice.library.entity;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
+@Builder
 public class UserEntity {
     private int id;
     private String name;

@@ -26,7 +26,7 @@ public class UserResource {
         UserEntity foundUser = userService.find(userModel.getName());
         Response response;
         if (Objects.isNull(foundUser)) {
-            response = Response.noContent().build();
+            response = Response.status(Response.Status.NOT_FOUND).build();
         } else if (!foundUser.getPassword().equals(userModel.getPassword())) {
             response = Response.status(Response.Status.FORBIDDEN).build();
         } else {

@@ -11,9 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class MySQLAuthorRepositoryImpl implements AuthorRepository {
@@ -32,10 +30,6 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     @Override
     public int create(AuthorEntity author) {
         Connection cn = dbUtil.getConnectionFromPool();
-        if (Objects.isNull(cn)) {
-            LOGGER.info("create(): No available connection");
-            return -1;
-        }
         boolean rowInserted = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.CREATE_AUTHOR.getQuery())) {
             statement.setString(1, author.getName());
@@ -55,20 +49,17 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     public AuthorEntity read(int id) {
         AuthorEntity author = null;
         Connection cn = dbUtil.getConnectionFromPool();
-        if (Objects.isNull(cn)) {
-            LOGGER.info("read(): No available connection");
-            return null;
-        }
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_AUTHOR_BY_ID.getQuery())) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     String name = resultSet.getString(2);
                     LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
-                    author = new AuthorEntity();
-                    author.setId(id);
-                    author.setName(name);
-                    author.setBirthdate(birthdate);
+                    author = AuthorEntity.builder()
+                            .id(id)
+                            .name(name)
+                            .birthdate(birthdate)
+                            .build();
                 }
             }
         } catch (Exception e) {
@@ -85,10 +76,6 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     public AuthorEntity read(String name) {
         AuthorEntity author = null;
         Connection cn = dbUtil.getConnectionFromPool();
-        if (Objects.isNull(cn)) {
-            LOGGER.info("read(): No available connection");
-            return null;
-        }
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_AUTHOR_BY_NAME.getQuery())) {
             statement.setString(1, '%' + name + '%');
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -96,10 +83,11 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
                     int id = Integer.parseInt(resultSet.getString(1));
                     String nameOriginal = resultSet.getString(2);
                     LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
-                    author = new AuthorEntity();
-                    author.setId(id);
-                    author.setName(nameOriginal);
-                    author.setBirthdate(birthdate);
+                    author = AuthorEntity.builder()
+                            .id(id)
+                            .name(nameOriginal)
+                            .birthdate(birthdate)
+                            .build();
                 }
             }
         } catch (Exception e) {
@@ -115,10 +103,6 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     @Override
     public boolean update(AuthorEntity author) {
         Connection cn = dbUtil.getConnectionFromPool();
-        if (Objects.isNull(cn)) {
-            LOGGER.info("update(): No available connection");
-            return false;
-        }
         boolean rowUpdated = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.UPDATE_AUTHOR.getQuery())) {
             statement.setString(1, author.getName());
@@ -135,10 +119,6 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     @Override
     public boolean delete(int id) {
         Connection cn = dbUtil.getConnectionFromPool();
-        if (Objects.isNull(cn)) {
-            LOGGER.info("delete(): No available connection");
-            return false;
-        }
         boolean rowDeleted = false;
         try (PreparedStatement statement = cn.prepareStatement(Queries.DELETE_AUTHOR.getQuery())) {
             statement.setInt(1, id);
@@ -154,20 +134,17 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
     public List<AuthorEntity> readAll() {
         Connection cn = dbUtil.getConnectionFromPool();
         List<AuthorEntity> authorList = new ArrayList<>();
-        if (Objects.isNull(cn)) {
-            LOGGER.info("readAll(): No available connection");
-            return authorList;
-        }
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_ALL_AUTHORS.getQuery())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     int id = resultSet.getInt(1);
                     String name = resultSet.getString(2);
                     LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
-                    AuthorEntity author = new AuthorEntity();
-                    author.setId(id);
-                    author.setName(name);
-                    author.setBirthdate(birthdate);
+                    AuthorEntity author = AuthorEntity.builder()
+                            .id(id)
+                            .name(name)
+                            .birthdate(birthdate)
+                            .build();
                     authorList.add(author);
                 }
             }
