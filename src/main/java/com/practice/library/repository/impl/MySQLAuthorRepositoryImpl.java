@@ -53,8 +53,8 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    String name = resultSet.getString(2);
-                    LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
+                    String name = resultSet.getString("name");
+                    LocalDate birthdate = LocalDate.parse(resultSet.getString("birthdate"));
                     author = AuthorEntity.builder()
                             .id(id)
                             .name(name)
@@ -80,9 +80,9 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
             statement.setString(1, '%' + name + '%');
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    int id = Integer.parseInt(resultSet.getString(1));
-                    String nameOriginal = resultSet.getString(2);
-                    LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
+                    int id = Integer.parseInt(resultSet.getString("id"));
+                    String nameOriginal = resultSet.getString("name");
+                    LocalDate birthdate = LocalDate.parse(resultSet.getString("birthdate"));
                     author = AuthorEntity.builder()
                             .id(id)
                             .name(nameOriginal)
@@ -137,9 +137,9 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
         try (PreparedStatement statement = cn.prepareStatement(Queries.READ_ALL_AUTHORS.getQuery())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    String name = resultSet.getString(2);
-                    LocalDate birthdate = LocalDate.parse(resultSet.getString(3));
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("name");
+                    LocalDate birthdate = LocalDate.parse(resultSet.getString("birthdate"));
                     AuthorEntity author = AuthorEntity.builder()
                             .id(id)
                             .name(name)

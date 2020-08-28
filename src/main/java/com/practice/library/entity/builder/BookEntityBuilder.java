@@ -8,12 +8,11 @@ import java.time.LocalDate;
 
 public class BookEntityBuilder {
     public BookEntity create(BookRequestModel bookModel) {
-        BookEntity book = BookEntity.builder()
+        return BookEntity.builder()
                 .id(bookModel.getId())
                 .name(bookModel.getName())
                 .publishDate(LocalDate.parse(bookModel.getPublishDate()))
                 .author(AuthorEntity.builder().id(bookModel.getAuthorId()).build())
                 .build();
-        return book;
     }
 }
