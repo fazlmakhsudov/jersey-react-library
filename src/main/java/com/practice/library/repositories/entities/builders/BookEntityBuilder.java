@@ -10,7 +10,7 @@ public class BookEntityBuilder {
                 .id(bookDomain.getId())
                 .name(bookDomain.getName())
                 .publishDate(bookDomain.getPublishDate())
-                .authorEntity(AuthorEntity.builder().id(bookDomain.getAuthorDomain().getId()).build())
+                .author(AuthorEntity.builder().id(bookDomain.getAuthorDomain().getId()).build())
                 .build();
     }
 }

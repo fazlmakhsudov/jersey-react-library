@@ -26,7 +26,7 @@ public class BookDomainBuilder {
                 .id(bookEntity.getId())
                 .name(bookEntity.getName())
                 .publishDate(bookEntity.getPublishDate())
-                .authorDomain(authorDomainBuilder.create(bookEntity.getAuthorEntity()))
+                .authorDomain(authorDomainBuilder.create(bookEntity.getAuthor()))
                 .build();
     }
 

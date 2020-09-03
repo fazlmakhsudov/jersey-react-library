@@ -1,4 +1,4 @@
-package com.practice.library.util;
+package com.practice.library.repositories;
 
 import lombok.Getter;
 

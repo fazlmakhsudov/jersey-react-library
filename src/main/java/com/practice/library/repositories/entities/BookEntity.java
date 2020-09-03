@@ -15,5 +15,5 @@ public class BookEntity {
     private int id;
     private String name;
     private LocalDate publishDate;
-    private AuthorEntity authorEntity;
+    private AuthorEntity author;
 }

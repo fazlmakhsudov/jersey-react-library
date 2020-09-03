@@ -1,9 +1,7 @@
 package com.practice.library.repositories;
 
 import com.practice.library.repositories.entities.UserEntity;
-import com.practice.library.util.DBUtilConnectionPool;
-import com.practice.library.util.Property;
-import com.practice.library.util.Queries;
+import com.practice.library.util.DBManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,13 +11,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class MySQLUserRepositoryImpl implements UserRepository {
-    private DBUtilConnectionPool dbUtil;
+    private DBManager dbUtil;
     private static final Logger LOGGER = Logger.getLogger("MySQLBookRepository");
 
     public MySQLUserRepositoryImpl() {
-        Property property = new Property("mysql");
         try {
-            dbUtil = DBUtilConnectionPool.getInstance(property);
+            dbUtil = DBManager.getInstance("mysql");
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
