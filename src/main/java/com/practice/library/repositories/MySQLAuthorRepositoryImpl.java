@@ -17,7 +17,7 @@ public class MySQLAuthorRepositoryImpl implements AuthorRepository {
 
     public MySQLAuthorRepositoryImpl() {
         try {
-            dbUtil = DBManager.getInstance("mysql");
+            dbUtil = DBManager.getInstance();
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }

@@ -19,7 +19,7 @@ public class MySQLBookRepositoryImpl implements BookRepository {
 
     public MySQLBookRepositoryImpl() {
         try {
-            dbUtil = DBManager.getInstance("mysql");
+            dbUtil = DBManager.getInstance();
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }

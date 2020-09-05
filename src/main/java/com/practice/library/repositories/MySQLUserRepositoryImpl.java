@@ -16,7 +16,7 @@ public class MySQLUserRepositoryImpl implements UserRepository {
 
     public MySQLUserRepositoryImpl() {
         try {
-            dbUtil = DBManager.getInstance("mysql");
+            dbUtil = DBManager.getInstance();
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
         }
